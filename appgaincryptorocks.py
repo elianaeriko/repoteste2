@@ -17,7 +17,7 @@ app = Flask(__name__)
 #model = pickle.load(open('nosso_modelo.pickle', 'rb'))
 token = os.environ.get('GRUPO2_TOKEN')
 ticker = 'BTCUSDT'
-valor_compra_venda = 10
+valor_compra_venda = 1000
 
 urlbase = 'https://mighty-bastion-45199.herokuapp.com/'
 
