@@ -124,7 +124,7 @@ def my_robot(tempo, token):
     # model = pickle.load(open('nosso_modelo.pkl', 'rb'))
     ticker = 'BTCUSDT'
     count_iter = 0
-    valor_compra_venda = 10
+    valor_compra_venda = 1000
     
     while count_iter < tempo:
         
