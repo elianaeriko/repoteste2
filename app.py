@@ -9,12 +9,13 @@ from flask import Flask, jsonify, request
 import numpy as np
 import pandas as pd
 import math
+import os
 from sqlalchemy import create_engine
 app = Flask(__name__)
 
 # Carregando modelo criado
 #model = pickle.load(open('nosso_modelo.pickle', 'rb'))
-token = '7815696ecbf1c96e6894b779456d330e'
+token = os.environ.get('GRUPO2_TOKEN')
 ticker = 'BTCUSDT'
 valor_compra_venda = 10
 
@@ -44,7 +45,7 @@ def api_get(route):
     return df
 
 
-def tratamento(df):
+def tratamento(data):
     data['cont'] = range(0,data.shape[0])
     data.rename(columns = {'close':'valor'}, inplace = True)
     data.loc[:,'target_num'] = data['valor'].shift(-1)
@@ -98,6 +99,7 @@ def tratamento(df):
     data_1['tend_min_60m'] = data_1['valor'].rolling(window=60).min()
     data_1['tend60_max/min'] = data_1['tend_max_60m']/ data_1['tend_min_60m']
     data_1 = data_1[['valor', 'volume', 'cont', 'target','Data','Dia_da_semana', 'preco_lag60m','diff_5','Semana_Mês', 'tend_med_60m', 'tend_med_5m','tend_ult_5m/60m', 'tend_med_720m','tend_ult_60m/720m','tend_max_60m','tend_min_60m','tend60_max/min']].reset_index(drop = True)
+    #data_1 = data_1[['valor', 'volume', 'cont','Dia_da_semana', 'preco_lag60m','diff_5','Semana_Mês', 'tend_med_60m', 'tend_med_5m','tend_ult_5m/60m', 'tend_med_720m','tend_ult_60m/720m','tend_max_60m','tend_min_60m','tend60_max/min']].reset_index(drop = True)
     df = data_1
     df = df.dropna()
     df.head()
@@ -117,8 +119,8 @@ def how_much_i_have(ticker, token):
         return 0
 
 def my_robot(tempo, token):
-    #model = pickle.load(open('nosso_modelo.pickle', 'rb'))
-    #  model = pickle.load(open('nosso_modelo.pkl', 'rb'))
+    model = pickle.load(open('nosso_modelo.pickle', 'rb'))
+    # model = pickle.load(open('nosso_modelo.pkl', 'rb'))
     ticker = 'BTCUSDT'
     count_iter = 0
     valor_compra_venda = 10
@@ -133,11 +135,13 @@ def my_robot(tempo, token):
         df = tratamento(df)
 
         # Isolando a linha mais recente
-        df_last = df.iloc[[np.argmax(df['time'])]]
-
+        df_last = df.iloc[[np.argmax(df['cont'])]]
+        
         # Calculando tendência, baseada no modelo linear criado
+        
         #tendencia = model.predict(df_last).iloc[0]
-        tendencia = 1
+        tendencia = model.predict(df_last)[0]
+        #tendencia = 1
 
         # A quantidade de cripto que será comprada/ vendida depende do valor_compra_venda e da cotação atual
         qtdade = compute_quantity(coin_value = df_last['valor'], invest_value = valor_compra_venda, significant_digits = 2)
