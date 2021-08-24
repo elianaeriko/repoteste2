@@ -188,7 +188,7 @@ def my_robot(tempo, token):
         time.sleep(60)
 
 
-token = '7815696ecbf1c96e6894b779456d330e'
+
 
 @app.route("/")
 def index():
@@ -206,6 +206,9 @@ def wakeup():
     except requests.exceptions.ReadTimeout: 
         pass
     """
+
+    token = os.environ.get('GRUPO2_TOKEN')
+    
     tempo = int(request.form.get("time"))
     if not tempo:
         return "Group token must be provided", None
