@@ -19,6 +19,7 @@ token = os.environ.get('GRUPO2_TOKEN')
 ticker = 'BTCUSDT'
 valor_compra_venda = 1000
 
+
 urlbase = 'https://mighty-bastion-45199.herokuapp.com/'
 
 
