@@ -138,7 +138,7 @@ def my_robot(tempo, token):
         df_last = df.iloc[[np.argmax(df['cont'])]]
         
         # Calculando tendência, baseada no modelo linear criado
-        
+        df_last = df_last.drop(columns=['target','Data'])
         #tendencia = model.predict(df_last).iloc[0]
         tendencia = model.predict(df_last)[0]
         #tendencia = 1
@@ -218,5 +218,7 @@ def wakeup():
 
 
 
-
+#if __name__ == '__main__':
+#   token=''
+#   my_robot(60,token)
 
